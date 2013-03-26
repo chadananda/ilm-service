@@ -1,8 +1,5 @@
-<style>
-  img[alt='ilm-logo'] {float: right; max-width:20%; margin-left:1em;}
-</style> 
 
-![ilm-logo](http://dl.dropbox.com/u/382588/ILM-HTML5/logo.svg)
+<img src="http://dl.dropbox.com/u/382588/ILM-HTML5/logo.svg" style="float: right; max-width:20%; margin-left:1em;">
 
 # Simple REST interface for ‘ILM conversion
 
