@@ -1,5 +1,5 @@
 
-<img src="http://dl.dropbox.com/u/382588/ILM-HTML5/logo.svg" style="float: right; max-width:20%; margin-left:1em;">
+<img src="http://dl.dropbox.com/u/382588/ILM-HTML5/logo.svg" style="float: right; max-width:20%; margin-left:1em;" width="20%" align="right">
 
 # Simple REST interface for ‘ILM conversion
 
