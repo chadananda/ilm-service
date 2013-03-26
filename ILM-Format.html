@@ -1,0 +1,214 @@
+﻿<!DOCTYPE html>
+<html><title>‘ILM, Simplified Bahá’í Texts</title>
+<style>img[alt='logo'] {float: right; max-width:20%; margin-left:1em;}</style>
+<xmp theme="cerulean" style="display:none;">
+
+
+
+![logo](http://dl.dropbox.com/u/382588/ILM-HTML5/logo.svg)
+
+# ‘ILM, An Easy Clean Bahá’í Text File Format
+
+
+__Concept:__ Formatting Bahá’í texts is a pain. I've played with lots of formats from Glyph to XML to HTML5 looking for something simple but easily tranformed into ebooks, semantically correct HTML, or typographically correct PDF. Everything becomes too complex too quickly.
+
+This project takes a step back. Inspired by Markdown and Jade, the concept is to create a really simple format which is a lot like the plain text files already found in [Ocean](http://bahai-education.org) but which contains necessary semantic and structure information.
+
+The second goal of the project is to create an abstraction layer which allows Bahá’í terminology to be automatically recognized and standardized to a tokenized format ({Bahai} instead of Bahá’í). The correct spelling of the term is then replaced out only when the document is being converted into it's final target format. That way we can feed unicode UTF8 for document types that can handle the required fonts while using a simpler format for documents that cannot (not all docuemnts can display dot-under letters like __Ḥ__, for example.)
+
+Ilm formatted books will be stored as UTF8 with the *.ilm file extension.
+
+__Benefits:__ Using ‘Ilm, a Bahá’í book can be prepared quickly using a standard text editor. The result will be typographically beautiful and, best of all, will be free from the thousands of errors in Bahá’í terms which plauge all other [attempts at creating Bahá’í electronic text](http://reference.bahai.org).
+
+# ‘ILM Tools
+
+‘ILM Tools are open source Javascript scripts and applications to help you in your book conversion process
+
+- ‘ILM Editor with debug preview
+- Ocean Library conversion project
+- ‘ILM Term Replacement List
+- ‘ILM conversion tool as REST webservice API
+- ‘ILM conversion tool as Node.js command-line application
+- Wrapper script to let you write and test ‘Ilm in a text editor and test locally in a browser
+
+-------------------------------------
+
+# The ‘ILM File Format
+
+‘ILM documents are plain text files with the addition of a meta-data block at teh top and then sections, sub-sections, text blocks and inline markup. Simple right?
+
+
+### The Meta-Data Block
+
+A meta-data block at the top of the document specifies some basic document information:
+
+- Title
+- Language
+- LanguageCode
+- Bookshelf
+- Author
+- Subtitle
+- Description
+- Acronym
+- Bookimage
+- Publisher
+- PublishInfo
+- PublishDate
+- Copyright
+- Sections (Talk|Chapter|Selection)
+- Numbering (sequential|chapters|none)
+- Reference = {Author}, {Title}, {Sectionname}, par {parnum}
+
+
+
+### Sections &amp; Sub-sections
+
+ Sections can be denoted markdown style (with prefixed # symbols). All section meta-data is inferred with title being inferred from the text and type being inferred from the number of # characters. Section meta-data can be overrided by using a "property token", key:value data in curly brackets like: {author:shoghi, date:31-12-1938}
+
+ note: sections automatically end at the end of the book or at the beginning of another same-level section
+
+    # one char: major section outside chapters such as prologue or forword
+    ## two chars: a Chapter/Selection break
+    ### three chars: a sub-chapter break (such as a multi-paragraph quote)
+    #### four chars: a sub-header -- NOT a section at all
+
+- Type (op: Preface|Forward|Epilogue etc.)
+- Title (op, when displayed)
+- Author (override prev)
+- Numbering (override prev)
+- Date (op, inherited or inferred from contained date block)
+
+
+
+### Text Blocks
+
+Text blocks are identified by the presence of a blank line dividing each. Each block's meta-data is inferred but can be overridden by beginning the paragraph with a {key:value} property token. The default key is "type" and default type is "paragraph". Thus a block of text with no property token is normally inferred to be {type:paragraph}
+
+#### Meta Data
+
+- Block Types (par|sig|title|heading|subhead|date|note|ref|ednote| blockquote|list |salutation| )
+- Author, Numbering (override)
+- sectype (chapter|)
+
+#### Shortcuts:
+
+- Default key is "type" it can be ommitted so blocks can begin with a very brief property string such as {sig} or {date}.
+- Blocks surrounded with square brackets "[]" are inferred to be type "note" or "ednote".
+- Blocks surrounded with parenthesis "()" are inferred to by type "reference"
+- Short blocks in ALL-CAPS are inferred to be sub-headers, not sections
+- Blocks beginning in astrisk "*" or dash "-" are inferred to be lists
+
+
+
+### Inline (within single text blocks)
+
+- Regular Quotes - replaced with curly quotes as possible
+  - Override: to override, use UTF8 single or double quotes to force open and close
+- Baha'i term - Text token from the terms table, surrounded in {} such as {Bahai} or {AbdulBaha}
+- Typographical:
+  - M-dash: "---" or " -- "
+  - N-Dash: "--" or " - "
+  - Elipses: ... or ....
+- Meta Data
+  - Author Quotes (bab|baha|abd|shoghi|uhj|none) - author name inserted after open quote: "{bab}some text"
+    note: remaining quotes in paragraph are assumed to be the same author unless overridden with {none}
+  - Place
+  - Person
+  - Date
+  - Page: Use property string {pg:#} in text to embedd page number. All page property strings should be within a text block. Multiple page blocks are unnecessary (such as: {pg:12}{pg:13}{pg:14}{pg:15})
+
+
+
+
+## Example document:
+
+__File name:__ "The Kitab-i-Iqan.txt"
+
+
+<pre> &lt;!- Document info:
+  Title = The Kitab-i-Iqan
+  Language = English:en
+  Bookshelf = Baha'i
+  Document_type = Book
+  Author = Baha'u'llah:baha
+  Subtitle = The Book of Certitude
+  Description = Baha'u'llah's Preeminent Doctrinal Work
+  Acronym = kiq
+  Bookimage = http://dl.dropbox.com/u/382588/ILM-HTML5/logo.svg
+  Publisher = US Baha'i Publishing Trust
+  PublishInfo =
+  PublishDate =
+  Copyright =
+  Numbering = sequential
+  Translator = Shoghi Effendi
+-&gt;
+
+# {forword} {pg:i} FORWORD
+
+This is one more attempt to introduce to the West, in language however
+inadequate, this book of unsurpassed pre-eminence among the writings of the
+Author of the Baha'i Revelation. The hope is that it may assist others in their
+efforts to approach what must always be regarded as the unattainable goal -- a
+befitting rendering of Baha'u'llah's matchless utterance.
+
+{sig} SHOGHI {pg:1}
+
+
+# {part} PART ONE {pg:3}
+
+{salutation} IN THE NAME OF OUR LORD, THE EXALTED, THE MOST HIGH.
+
+No man shall attain the shores of the ocean of true understanding except he be
+detached from all that is in heaven and on earth. Sanctify your souls, O ye
+peoples of the world, that haply ye may attain that station which God hath
+destined for you and enter thus the tabernacle which, according to the
+dispensations of Providence, hath been raised in the firmament of the Bayan.
+
+THE essence of these words is this: they that tread the path of faith, they that
+thirst for the wine of certitude, must cleanse themselves of all that is earthly
+-- their ears from idle talk, their minds from vain imaginings, their hearts
+from worldly affections, their eyes from that which perisheth. They should put
+their trust in God, and, holding fast unto Him, follow in His way. Then will
+they be made worthy of the effulgent glories of the sun of divine knowledge and
+understanding, and become the recipients of a grace that is infinite and unseen,
+inasmuch as man can never hope to attain unto the knowledge of the All-Glorious,
+can never quaff from the stream of divine knowledge {pg:4} and wisdom, can never
+enter the abode of immortality, nor partake of the cup of divine nearness and
+favour, unless and until he ceases to regard the words and deeds of mortal men
+as a standard for the true understanding and recognition of God and His
+Prophets.
+
+</pre>
+
+
+# Roll your own Bahá’í Text
+
+Just create an .html document and wrap the ‘Ilm text like this:
+
+<pre>&lt;!DOCTYPE html&gt;
+&lt;html&gt;&lt;title&gt;Book Title&lt;/title&gt;&lt;xmp theme=&quot;debug&quot; style=&quot;display:none;&quot;&gt;
+
+# Your &lsquo;Ilm-Formatted Text goes here, view in any browser
+
+Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+culpa qui officia deserunt mollit anim id est laborum.
+
+
+&lt;/xmp&gt;&lt;script src=&quot;http://ubl-api.com/ilm-convert.js&quot;&gt;&lt;/script&gt;
+
+
+
+</pre>
+
+
+
+
+
+
+
+
+</xmp><script src="http://strapdownjs.com/v/0.2/strapdown.js"></script>
