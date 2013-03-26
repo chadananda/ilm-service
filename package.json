@@ -1,0 +1,34 @@
+{
+  "name": "ilm",
+  "preferGlobal": false,
+  "version": "0.0.1",
+  "author": "Chad Jones <chadananda@gmail.com>",
+  "description": "A REST script to provide ILM conversion from a nodejitsu service",
+  "contributors": [
+    {
+      "name": "Daniel Jones",
+      "email": "djones1844@gmail.com"
+    }
+  ],
+  "scripts": {
+    "start": "node ilm.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chadnanda/ilm-service.git"
+  },
+  "keywords": [
+    "Ocean",
+    "ILM"
+  ],
+  "dependencies" : {
+    "colors"   :  "*",
+    "optimist" :  "0.2.x",
+    "wrench"   :  "1.4.*"
+  },
+  "analyze": false,
+  "license": "MIT",
+  "engines": {
+    "node": ">=0.6"
+  }
+}
